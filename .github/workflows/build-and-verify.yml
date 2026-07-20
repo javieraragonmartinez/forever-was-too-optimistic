@@ -1,0 +1,32 @@
+name: Build and verify
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: python -m pip install -r requirements.txt
+      - run: python -m unittest discover -v
+      - run: |
+          python scripts/bcw_yagzhev_certificate.py --write-artifact /tmp/certificate.json
+          cmp /tmp/certificate.json artifacts/bcw-yagzhev-dim79.json
+      - run: python scripts/verify_bcw_yagzhev_artifact.py artifacts/bcw-yagzhev-dim79.json
+      - run: python -m jsonschema -i artifacts/bcw-yagzhev-dim79.json artifacts/bcw-yagzhev-certificate.schema.json
+      - run: sha256sum -c artifacts/SHA256SUMS
+
+  paper:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: xu-cheng/latex-action@v3
+        with:
+          root_file: ahora-sabemos-v1.0.tex
+          latexmk_use_xelatex: false
+          args: -pdf -interaction=nonstopmode -halt-on-error
