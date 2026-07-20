@@ -31,6 +31,19 @@ jobs:
       - name: Install dependencies
         run: python -m pip install --upgrade pip && python -m pip install -r requirements.txt
 
+      - name: Generate canonical certificate
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts
+          if test -f artifacts/bcw-yagzhev-dim79.json; then
+            cp artifacts/bcw-yagzhev-dim79.json /tmp/committed-bcw-yagzhev-dim79.json
+          fi
+          python scripts/bcw_yagzhev_certificate.py --write-artifact artifacts/bcw-yagzhev-dim79.json
+          if test -f /tmp/committed-bcw-yagzhev-dim79.json; then
+            cmp /tmp/committed-bcw-yagzhev-dim79.json artifacts/bcw-yagzhev-dim79.json
+          fi
+
       - name: Run release test suite
         run: python -m unittest discover -s tests -p 'test_*.py' -v
 
