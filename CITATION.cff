@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+message: "If you use this work, please cite it using these metadata."
+title: "Ahora sabemos que siempre era demasiado optimista"
+type: article
+authors:
+  - family-names: "Aragón"
+    given-names: "Javier"
+    email: "javier@affectiveAI.es"
+version: "1.0"
+date-released: "2026-07-20"
+doi: "10.5281/zenodo.21460623"
+license: CC-BY-4.0
+abstract: >-
+  Exact algebraic and geometric study of an explicit polynomial map in
+  dimension three with constant nonzero Jacobian determinant and a rational
+  triple collision, together with a reproducible BCW/Yagzhev certificate.
+keywords:
+  - Jacobian conjecture
+  - polynomial maps
+  - exact arithmetic
+  - BCW reduction
+  - Yagzhev reduction
+  - reproducible mathematics
