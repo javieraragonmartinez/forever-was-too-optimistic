@@ -1,0 +1,17 @@
+name: Attribution or priority correction
+description: Suggest a documented correction to attribution, chronology or priority.
+title: "[Attribution] "
+labels: [attribution]
+body:
+  - type: textarea
+    attributes:
+      label: Current wording
+      description: Include the precise file and passage.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Proposed correction and evidence
+      description: Provide dated primary sources whenever possible.
+    validations:
+      required: true

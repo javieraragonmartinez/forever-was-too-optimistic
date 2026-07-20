@@ -1,0 +1,21 @@
+name: Mathematical error report
+description: Report a concrete mathematical error or unsupported inference.
+title: "[Mathematics] "
+labels: [mathematics, review-needed]
+body:
+  - type: textarea
+    attributes:
+      label: Claim or passage
+      description: Quote the statement and give the page, equation or file location.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Proposed counterargument or correction
+      description: Include an exact calculation, proof, counterexample or primary reference.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Reproduction details
+      description: Commands, software versions and relevant output.
