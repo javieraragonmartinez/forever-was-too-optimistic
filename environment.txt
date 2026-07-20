@@ -1,0 +1,9 @@
+Reference generation environment
+Python 3.13
+SymPy 1.14.0
+jsonschema 4.26.0
+Pillow 12.2.0
+pdfTeX 3.141592653-2.6-1.40.28
+TeX Live 2025
+
+The independent verifier requires only Python >= 3.11 and the standard library.
