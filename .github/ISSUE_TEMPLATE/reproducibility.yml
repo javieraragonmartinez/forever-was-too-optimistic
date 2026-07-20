@@ -1,0 +1,21 @@
+name: Reproducibility problem
+description: Report a failure in generation, verification, schema validation or compilation.
+title: "[Reproducibility] "
+labels: [reproducibility]
+body:
+  - type: input
+    attributes:
+      label: Command that failed
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Complete output
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Environment
+      description: Operating system, Python, SymPy, TeX and other relevant versions.
+    validations:
+      required: true

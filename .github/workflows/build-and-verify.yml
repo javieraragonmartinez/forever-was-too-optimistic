@@ -6,121 +6,36 @@ on:
   pull_request:
   workflow_dispatch:
 
-permissions:
-  contents: write
-
 jobs:
   verify:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
-
-      - name: Hydrate audited source package when required
-        shell: bash
-        run: |
-          set -euo pipefail
-          if test -d .bootstrap; then
-            mapfile -t parts < <(find .bootstrap -maxdepth 1 -type f -name 'source-bootstrap.b64.*' | sort -V)
-            test "${#parts[@]}" -gt 0
-            printf 'Hydrating from %s stored package parts.\n' "${#parts[@]}"
-            cat "${parts[@]}" | base64 --decode > /tmp/source-bootstrap.tar.gz
-            echo 'fe336267c7bfead6b6ca43bb66aa721e9ae9b6e9a27d6aa384041e2d2b274a20  /tmp/source-bootstrap.tar.gz' | sha256sum -c -
-            mkdir -p /tmp/source-tree
-            tar -xzf /tmp/source-bootstrap.tar.gz -C /tmp/source-tree
-            rsync -a /tmp/source-tree/ ./
-          fi
-          test -d tests
-          test -f scripts/bcw_yagzhev_certificate.py
-          test -f scripts/verify_bcw_yagzhev_artifact.py
-          test -f artifacts/bcw-yagzhev-certificate.schema.json
-
-      - uses: actions/setup-python@v6
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.13'
-          cache: pip
-
-      - name: Install Python dependencies
-        run: python -m pip install -r requirements.txt
-
-      - name: Generate exact certificate
-        run: python scripts/bcw_yagzhev_certificate.py --write-artifact artifacts/bcw-yagzhev-dim79.json
-
-      - name: Run independent verifier
-        run: python scripts/verify_bcw_yagzhev_artifact.py artifacts/bcw-yagzhev-dim79.json
-
-      - name: Validate JSON Schema 2020-12
-        run: python -m jsonschema -i artifacts/bcw-yagzhev-dim79.json artifacts/bcw-yagzhev-certificate.schema.json
-
-      - name: Run release test suite
-        run: python -m unittest discover -s tests -p 'test_*.py' -v
-
-      - name: Verify committed integrity manifest when present
+      - run: python -m pip install -r requirements.txt
+      - name: Regenerate certificate byte for byte
+        run: |
+          python scripts/bcw_yagzhev_certificate.py --write-artifact /tmp/certificate.json
+          if test -f artifacts/bcw-yagzhev-dim79.json; then
+            cmp /tmp/certificate.json artifacts/bcw-yagzhev-dim79.json
+          fi
+      - name: Run independent verification and tests
+        run: |
+          python scripts/verify_bcw_yagzhev_artifact.py /tmp/certificate.json
+          python -m jsonschema -i /tmp/certificate.json artifacts/bcw-yagzhev-certificate.schema.json
+          python -m unittest discover -v
+      - name: Verify committed integrity manifest
         if: hashFiles('artifacts/SHA256SUMS') != ''
         run: sha256sum -c artifacts/SHA256SUMS
 
   paper:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
-
-      - name: Hydrate audited source package when required
-        shell: bash
-        run: |
-          set -euo pipefail
-          if test -d .bootstrap; then
-            mapfile -t parts < <(find .bootstrap -maxdepth 1 -type f -name 'source-bootstrap.b64.*' | sort -V)
-            test "${#parts[@]}" -gt 0
-            cat "${parts[@]}" | base64 --decode > /tmp/source-bootstrap.tar.gz
-            echo 'fe336267c7bfead6b6ca43bb66aa721e9ae9b6e9a27d6aa384041e2d2b274a20  /tmp/source-bootstrap.tar.gz' | sha256sum -c -
-            mkdir -p /tmp/source-tree
-            tar -xzf /tmp/source-bootstrap.tar.gz -C /tmp/source-tree
-            rsync -a /tmp/source-tree/ ./
-          fi
-          test -f ahora-sabemos-v1.0.tex
-
+      - uses: actions/checkout@v4
       - uses: xu-cheng/latex-action@v3
         with:
           root_file: ahora-sabemos-v1.0.tex
           latexmk_use_xelatex: false
           args: -pdf -interaction=nonstopmode -halt-on-error
-
-  publish-source:
-    needs: [verify, paper]
-    if: github.ref == 'refs/heads/main' && github.actor != 'github-actions[bot]'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
-
-      - name: Publish verified source tree
-        shell: bash
-        run: |
-          set -euo pipefail
-          test -d .bootstrap
-          cp .github/workflows/build-and-verify.yml /tmp/build-and-verify.yml
-          mapfile -t parts < <(find .bootstrap -maxdepth 1 -type f -name 'source-bootstrap.b64.*' | sort -V)
-          test "${#parts[@]}" -gt 0
-          cat "${parts[@]}" | base64 --decode > /tmp/source-bootstrap.tar.gz
-          echo 'fe336267c7bfead6b6ca43bb66aa721e9ae9b6e9a27d6aa384041e2d2b274a20  /tmp/source-bootstrap.tar.gz' | sha256sum -c -
-          mkdir -p /tmp/source-tree
-          tar -xzf /tmp/source-bootstrap.tar.gz -C /tmp/source-tree
-          rsync -a --delete \
-            --exclude='.git/' \
-            --exclude='.bootstrap/' \
-            /tmp/source-tree/ ./
-          cp /tmp/build-and-verify.yml .github/workflows/build-and-verify.yml
-          sed -i 's#actions/checkout@v4#actions/checkout@v5#g; s#actions/setup-python@v5#actions/setup-python@v6#g' .github/workflows/publish-generated-assets.yml
-          rm -rf .bootstrap .github/workflows/bootstrap-source.yml
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -A
-          git diff --cached --stat
-          if git diff --cached --quiet; then
-            echo 'Source tree already published.'
-          else
-            git commit -m 'feat: publish complete audited source tree'
-            git push origin HEAD:main
-          fi

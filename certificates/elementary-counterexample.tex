@@ -1,0 +1,79 @@
+
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+
+% Core packages
+\usepackage{amsmath,amssymb,amsthm}
+
+% Paragraphs
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.30\baselineskip}
+
+\newtheorem{proposition}{Proposition}
+
+\title{A Counterexample to the Jacobian Conjecture in Dimension Three}
+\author{}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{The counterexample}
+
+The Jacobian conjecture asserts that a polynomial map
+$F\colon \mathbb{C}^n\to\mathbb{C}^n$ with constant nonzero Jacobian
+determinant must be a polynomial automorphism.  The following map gives a
+counterexample in dimension three.
+
+\begin{proposition}
+The polynomial map $F\colon\mathbb{C}^3\to\mathbb{C}^3$ defined by
+\begin{align*}
+F(x,y,z)=\bigl(&
+ (1+xy)^3z+y^2(1+xy)(4+3xy),\\
+&y+3x(1+xy)^2z+3xy^2(4+3xy),\\
+&2x-3x^2y-x^3z
+\bigr)
+\end{align*}
+has constant Jacobian determinant $-2$, but it is not injective.
+Consequently, $F$ is not a polynomial automorphism.
+\end{proposition}
+
+\begin{proof}
+Direct differentiation and simplification give
+\[
+\left|
+\frac{\partial}{\partial(x,y,z)}
+\begin{pmatrix}
+(1+xy)^3z+y^2(1+xy)(4+3xy)\\
+y+3x(1+xy)^2z+3xy^2(4+3xy)\\
+2x-3x^2y-x^3z
+\end{pmatrix}
+\right|=-2.
+\]
+On the other hand, the three distinct points
+\[
+\left(0,0,-\frac14\right),\qquad
+\left(1,-\frac32,\frac{13}{2}\right),\qquad
+\left(-1,\frac32,\frac{13}{2}\right)
+\]
+have the same image, since
+\begin{align*}
+F\left(0,0,-\frac14\right)
+&=\left((1+0)^3\left(-\frac14\right)+0,\;0+0+0,\;0-0-0\right)\\
+&=\left(-\frac14,0,0\right),\\
+F\left(1,-\frac32,\frac{13}{2}\right)
+&=\left(-\frac{13}{16}+\frac9{16},\;
+-\frac32+\frac{39}{8}-\frac{27}{8},\;
+2+\frac92-\frac{13}{2}\right)\\
+&=F\left(-1,\frac32,\frac{13}{2}\right)
+=\left(-\frac14,0,0\right).
+\end{align*}
+Thus $F$ is not injective, despite having constant nonzero Jacobian
+determinant.
+\end{proof}
+
+\paragraph{Acknowledgments.}
+Thanks to my close friend Akhil for asking about the Jacobian conjecture and
+to my close friend Fable for working on this during the World Cup final.
+
+\end{document}

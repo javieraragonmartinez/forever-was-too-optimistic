@@ -1,4 +1,14 @@
+<p align="center"><img src="assets/repository-cover.png" alt="Academic cover: three rational points map to one image" width="100%"></p>
+
 # Ahora sabemos que “siempre” era demasiado optimista
+
+[English](README.en.md) · **Español**
+
+[![Build and verify](https://github.com/javieraragonmartinez/forever-was-too-optimistic/actions/workflows/build-and-verify.yml/badge.svg)](https://github.com/javieraragonmartinez/forever-was-too-optimistic/actions/workflows/build-and-verify.yml)
+![Preprint](https://img.shields.io/badge/status-preprint-B88430)
+![Peer review](https://img.shields.io/badge/peer_review-pending-24598F)
+![License](https://img.shields.io/badge/license-CC_BY_4.0_%2B_MIT-1A6B6B)
+
 
 **English title:** *Now We Know That “Always” Was Too Optimistic*
 
@@ -146,3 +156,15 @@ desarrollados en el manuscrito se documentan en
 El artículo y la documentación narrativa se distribuyen bajo CC BY 4.0; el
 código, el esquema y los artefactos de verificación, bajo MIT. La delimitación
 exacta figura en [`LICENSE.md`](LICENSE.md).
+
+## Sistema visual y materiales de comunicación
+
+- [Portada académica](assets/repository-cover.png)
+- [Vista previa social de GitHub](assets/social-preview.png)
+- [Visual abstract en SVG](assets/visual-abstract.svg)
+- [Carrusel revisado de diez láminas](carousel-v2/)
+- [Sistema editable en Figma](https://www.figma.com/design/Zz8DXi2BvnEV0f4rWOaI1F)
+
+La identidad visual utiliza únicamente relaciones demostrables del ejemplo:
+tres puntos racionales distintos, una imagen común y el determinante jacobiano
+constante. Los elementos decorativos no se presentan como geometría probatoria.

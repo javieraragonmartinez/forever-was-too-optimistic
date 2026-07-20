@@ -1,0 +1,403 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:prism:bcw-yagzhev-certificate-v2",
+  "title": "BCW/Yagzhev exact reduction certificate",
+  "description": "Self-contained exact certificate for the dimension-79 cubic homogeneous counterexample.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "schema_file",
+    "release",
+    "format",
+    "provenance",
+    "dimensions",
+    "source_map",
+    "normalization",
+    "degree_reduction",
+    "intermediate_map",
+    "final_map",
+    "claims"
+  ],
+  "properties": {
+    "schema": {"const": "bcw-yagzhev-certificate-v2"},
+    "schema_file": {"const": "artifacts/bcw-yagzhev-certificate.schema.json"},
+    "release": {"$ref": "#/$defs/release"},
+    "format": {"$ref": "#/$defs/format"},
+    "provenance": {"$ref": "#/$defs/provenance"},
+    "dimensions": {"$ref": "#/$defs/dimensions"},
+    "source_map": {"$ref": "#/$defs/mapWithCollisions"},
+    "normalization": {"$ref": "#/$defs/normalization"},
+    "degree_reduction": {"$ref": "#/$defs/degreeReduction"},
+    "intermediate_map": {"$ref": "#/$defs/intermediateMap"},
+    "final_map": {"$ref": "#/$defs/finalMap"},
+    "claims": {"$ref": "#/$defs/claims"}
+  },
+  "$defs": {
+    "rational": {
+      "type": "string",
+      "pattern": "^-?(0|[1-9][0-9]*)(/[1-9][0-9]*)?$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "term": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["coefficient", "exponents"],
+      "properties": {
+        "coefficient": {"$ref": "#/$defs/rational"},
+        "exponents": {
+          "type": "array",
+          "items": {"type": "integer", "minimum": 0}
+        }
+      }
+    },
+    "polynomial": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["expression", "terms"],
+      "properties": {
+        "expression": {"type": "string"},
+        "terms": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/term"}
+        }
+      }
+    },
+    "point": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/rational"}
+    },
+    "release": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "title",
+        "title_en",
+        "author",
+        "email",
+        "version",
+        "date",
+        "doi",
+        "doi_status"
+      ],
+      "properties": {
+        "title": {"const": "Ahora sabemos que siempre era demasiado optimista"},
+        "title_en": {"const": "Now We Know That “Always” Was Too Optimistic"},
+        "author": {"const": "Javier Aragón"},
+        "email": {"const": "javier@affectiveAI.es"},
+        "version": {"const": "1.0"},
+        "date": {"const": "2026-07-20"},
+        "doi": {"const": "10.5281/zenodo.21460623"},
+        "doi_status": {"const": "reserved-pending-publication"}
+      }
+    },
+    "format": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "coefficient_field",
+        "arithmetic",
+        "readable_expressions",
+        "canonical_polynomials",
+        "term_encoding"
+      ],
+      "properties": {
+        "coefficient_field": {"const": "Q"},
+        "arithmetic": {"const": "exact rational arithmetic"},
+        "readable_expressions": {"const": "SymPy sstr"},
+        "canonical_polynomials": {"const": "sparse-polynomial-v1"},
+        "term_encoding": {"const": "coefficient plus full exponent vector"}
+      }
+    },
+    "fileRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "generatorRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "command", "python_version", "sympy_version"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "command": {"type": "string", "minLength": 1},
+        "python_version": {"type": "string", "minLength": 1},
+        "sympy_version": {"type": "string", "minLength": 1}
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["generator", "verifier", "schema", "paper_source"],
+      "properties": {
+        "generator": {"$ref": "#/$defs/generatorRecord"},
+        "verifier": {"$ref": "#/$defs/fileRecord"},
+        "schema": {"$ref": "#/$defs/fileRecord"},
+        "paper_source": {"$ref": "#/$defs/fileRecord"}
+      }
+    },
+    "dimensions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source", "intermediate", "final"],
+      "properties": {
+        "source": {"const": 3},
+        "intermediate": {"const": 39},
+        "final": {"const": 79}
+      }
+    },
+    "mapWithCollisions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "variables",
+        "components",
+        "jacobian_determinant",
+        "collision_points",
+        "common_value"
+      ],
+      "properties": {
+        "variables": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "components": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/polynomial"}
+        },
+        "jacobian_determinant": {"$ref": "#/$defs/rational"},
+        "collision_points": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {"$ref": "#/$defs/point"}
+        },
+        "common_value": {"$ref": "#/$defs/point"}
+      }
+    },
+    "normalization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "description",
+        "component_indices",
+        "component_scalars",
+        "components",
+        "jacobian_determinant",
+        "collision_points",
+        "common_value"
+      ],
+      "properties": {
+        "description": {"const": "K=(F3/2,F2,F1)"},
+        "component_indices": {
+          "type": "array",
+          "prefixItems": [{"const": 3}, {"const": 2}, {"const": 1}],
+          "items": false
+        },
+        "component_scalars": {
+          "type": "array",
+          "prefixItems": [{"const": "1/2"}, {"const": "1"}, {"const": "1"}],
+          "items": false
+        },
+        "components": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {"$ref": "#/$defs/polynomial"}
+        },
+        "jacobian_determinant": {"const": "1"},
+        "collision_points": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {"$ref": "#/$defs/point"}
+        },
+        "common_value": {"$ref": "#/$defs/point"}
+      }
+    },
+    "profileRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["step", "dimension", "max_degree", "terms"],
+      "properties": {
+        "step": {"type": "integer", "minimum": 0, "maximum": 18},
+        "dimension": {"type": "integer", "minimum": 3, "maximum": 39},
+        "max_degree": {"type": "integer", "minimum": 3, "maximum": 7},
+        "terms": {"type": "integer", "minimum": 1}
+      }
+    },
+    "stepRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "step",
+        "component",
+        "degree_before",
+        "variables_before",
+        "new_variables",
+        "P",
+        "Q"
+      ],
+      "properties": {
+        "step": {"type": "integer", "minimum": 1, "maximum": 18},
+        "component": {"type": "integer", "minimum": 1},
+        "degree_before": {"type": "integer", "minimum": 4, "maximum": 7},
+        "variables_before": {
+          "type": "array",
+          "minItems": 3,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "new_variables": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "P": {"$ref": "#/$defs/polynomial"},
+        "Q": {"$ref": "#/$defs/polynomial"}
+      }
+    },
+    "degreeReduction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["index_base", "profile", "steps"],
+      "properties": {
+        "index_base": {"const": 1},
+        "profile": {
+          "type": "array",
+          "minItems": 19,
+          "maxItems": 19,
+          "items": {"$ref": "#/$defs/profileRecord"}
+        },
+        "steps": {
+          "type": "array",
+          "minItems": 18,
+          "maxItems": 18,
+          "items": {"$ref": "#/$defs/stepRecord"}
+        }
+      }
+    },
+    "intermediateMap": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "variables",
+        "components",
+        "quadratic_components",
+        "cubic_components",
+        "degree_counts",
+        "decomposition",
+        "jacobian_determinant"
+      ],
+      "properties": {
+        "variables": {
+          "type": "array",
+          "minItems": 39,
+          "maxItems": 39,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "components": {
+          "type": "array",
+          "minItems": 39,
+          "maxItems": 39,
+          "items": {"$ref": "#/$defs/polynomial"}
+        },
+        "quadratic_components": {
+          "type": "array",
+          "minItems": 39,
+          "maxItems": 39,
+          "items": {"$ref": "#/$defs/polynomial"}
+        },
+        "cubic_components": {
+          "type": "array",
+          "minItems": 39,
+          "maxItems": 39,
+          "items": {"$ref": "#/$defs/polynomial"}
+        },
+        "degree_counts": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["1", "2", "3"],
+          "properties": {
+            "1": {"const": 39},
+            "2": {"const": 47},
+            "3": {"const": 38}
+          }
+        },
+        "decomposition": {"const": "identity + quadratic + cubic"},
+        "jacobian_determinant": {"const": "1"}
+      }
+    },
+    "finalMap": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "variables",
+        "components",
+        "form",
+        "jacobian_determinant",
+        "collision_points",
+        "common_value"
+      ],
+      "properties": {
+        "variables": {
+          "type": "array",
+          "minItems": 79,
+          "maxItems": 79,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "components": {
+          "type": "array",
+          "minItems": 79,
+          "maxItems": 79,
+          "items": {"$ref": "#/$defs/polynomial"}
+        },
+        "form": {"const": "identity + homogeneous cubic"},
+        "jacobian_determinant": {"const": "1"},
+        "collision_points": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {"$ref": "#/$defs/point"}
+        },
+        "common_value": {"$ref": "#/$defs/point"}
+      }
+    },
+    "claims": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_jacobian_determinant",
+        "normalized_source_jacobian_determinant",
+        "elementary_jacobian_row_identities",
+        "homogeneous_decomposition",
+        "final_block_jacobian_identity",
+        "final_jacobian_determinant",
+        "final_nonlinear_part_homogeneous_degree",
+        "collision_points_pairwise_distinct",
+        "rational_collision_certificates"
+      ],
+      "properties": {
+        "source_jacobian_determinant": {"const": "-2"},
+        "normalized_source_jacobian_determinant": {"const": "1"},
+        "elementary_jacobian_row_identities": {"const": 18},
+        "homogeneous_decomposition": {"const": true},
+        "final_block_jacobian_identity": {"const": true},
+        "final_jacobian_determinant": {"const": "1"},
+        "final_nonlinear_part_homogeneous_degree": {"const": 3},
+        "collision_points_pairwise_distinct": {"const": true},
+        "rational_collision_certificates": {"const": 3}
+      }
+    }
+  }
+}
