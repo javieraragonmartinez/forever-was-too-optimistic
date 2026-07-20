@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - '.bootstrap/source-bootstrap.b64'
+      - '.bootstrap/source-bootstrap.b64.*'
   workflow_dispatch:
 
 permissions:
@@ -17,9 +17,10 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Decode and extract source package
+      - name: Assemble, verify and extract source package
         run: |
-          base64 --decode .bootstrap/source-bootstrap.b64 > /tmp/source-bootstrap.tar.gz
+          cat .bootstrap/source-bootstrap.b64.* | base64 --decode > /tmp/source-bootstrap.tar.gz
+          echo 'fe336267c7bfead6b6ca43bb66aa721e9ae9b6e9a27d6aa384041e2d2b274a20  /tmp/source-bootstrap.tar.gz' | sha256sum -c -
           mkdir -p /tmp/source-tree
           tar -xzf /tmp/source-bootstrap.tar.gz -C /tmp/source-tree
           rsync -a --delete \
