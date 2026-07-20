@@ -1,4 +1,5 @@
 name: Publish generated assets
+run-name: Publish generated assets · ${{ github.ref_name }} · ${{ github.sha }}
 
 on:
   push:
@@ -7,52 +8,75 @@ on:
       - 'ahora-sabemos-v1.0.tex'
       - 'scripts/**'
       - 'requirements.txt'
+      - '.github/workflows/build-and-verify.yml'
       - '.github/workflows/publish-generated-assets.yml'
   workflow_dispatch:
 
 permissions:
   contents: write
 
+concurrency:
+  group: publish-generated-assets-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   generate-and-commit:
     if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Check out repository
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
-      - uses: actions/setup-python@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
         with:
           python-version: '3.13'
+          cache: pip
+
       - name: Install Python dependencies
-        run: python -m pip install -r requirements.txt
+        run: python -m pip install --upgrade pip && python -m pip install -r requirements.txt
+
       - name: Install TeX and PDF inspection tools
         run: |
           sudo apt-get update
           sudo apt-get install -y texlive-latex-extra texlive-fonts-recommended poppler-utils fonts-dejavu-core
+
       - name: Generate exact certificate
         run: python scripts/bcw_yagzhev_certificate.py --write-artifact artifacts/bcw-yagzhev-dim79.json
+
       - name: Generate social and academic visuals
         run: |
           python scripts/generate_carousel.py
           python scripts/generate_visual_assets.py
+
       - name: Compile paper in three passes
         run: |
           pdflatex -interaction=nonstopmode -halt-on-error ahora-sabemos-v1.0.tex
           pdflatex -interaction=nonstopmode -halt-on-error ahora-sabemos-v1.0.tex
           pdflatex -interaction=nonstopmode -halt-on-error ahora-sabemos-v1.0.tex
           test "$(pdfinfo ahora-sabemos-v1.0.pdf | awk '/^Pages:/ {print $2}')" = "43"
+
+      - name: Remove generated temporary files
+        run: |
+          find . -type d -name '__pycache__' -prune -exec rm -rf {} +
+          find . -type f \( -name '*.pyc' -o -name '*.pyo' \) -delete
+          rm -f *.aux *.log *.out *.toc *.fls *.fdb_latexmk *.synctex.gz
+
       - name: Build repository integrity manifest
         run: |
           rm -f artifacts/SHA256SUMS
           find . -type f \
             -not -path './.git/*' \
             -not -path './artifacts/SHA256SUMS' \
+            -not -path '*/__pycache__/*' \
+            -not -name '*.pyc' -not -name '*.pyo' \
             -not -name '*.aux' -not -name '*.log' -not -name '*.out' \
             -not -name '*.toc' -not -name '*.fls' -not -name '*.fdb_latexmk' \
             -not -name '*.synctex.gz' \
             -print0 | sort -z | xargs -0 sha256sum | sed 's#  \./#  #' > artifacts/SHA256SUMS
-          rm -f *.aux *.log *.out *.toc *.fls *.fdb_latexmk *.synctex.gz
+
       - name: Commit generated release assets
         run: |
           git config user.name 'github-actions[bot]'
@@ -62,5 +86,5 @@ jobs:
             echo 'Generated assets already current.'
           else
             git commit -m 'build: publish reproducible paper, certificate and visual assets'
-            git push
+            git push origin HEAD:main
           fi
