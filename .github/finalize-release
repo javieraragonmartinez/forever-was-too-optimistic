@@ -1,0 +1,4 @@
+finalize-complete-release-v1.0
+include-pdf-certificate-manifest-png-media
+retry=2
+texlive-fonts-extra=true
