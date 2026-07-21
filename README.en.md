@@ -1,4 +1,4 @@
-<p align="center"><img src="assets/repository-cover.svg" alt="Academic cover: three distinct rational points have one common image" width="100%"></p>
+<p align="center"><img src="assets/repository-cover.png" alt="Academic cover: three distinct rational points have one common image" width="100%"></p>
 
 # Now We Know That “Always” Was Too Optimistic
 
@@ -8,6 +8,10 @@
 ![Preprint](https://img.shields.io/badge/status-preprint-B88430)
 ![Peer review](https://img.shields.io/badge/peer_review-pending-24598F)
 ![License](https://img.shields.io/badge/license-CC_BY_4.0_%2B_MIT-1A6B6B)
+
+[**Download the 43-page preprint**](ahora-sabemos-v1.0.pdf) ·
+[Exact certificate](artifacts/bcw-yagzhev-dim79.json) ·
+[SHA-256 manifest](artifacts/SHA256SUMS)
 
 Version 1.0 of an extremely recent preprint dated 20 July 2026. It has not
 been peer reviewed. The elementary algebraic core is distributed together
@@ -74,10 +78,12 @@ regenerates the PDF, certificate, social graphics and SHA-256 manifest.
 
 ## Visual and communication materials
 
-- [`assets/repository-cover.svg`](assets/repository-cover.svg): academic README cover.
-- [`assets/social-preview.svg`](assets/social-preview.svg): horizontal social preview.
-- [`social/`](social/): editorial publication cards.
-- `carousel-v2/`: revised ten-panel academic carousel.
+- [`assets/repository-cover.png`](assets/repository-cover.png): academic README cover.
+- [`assets/social-preview.png`](assets/social-preview.png): horizontal GitHub and social preview.
+- [`assets/academic-cover.png`](assets/academic-cover.png): vertical editorial cover.
+- [`assets/visual-abstract.svg`](assets/visual-abstract.svg): vector visual abstract.
+- [`social/`](social/): four editorial publication cards in PNG and SVG.
+- [`carousel-v2/contact-sheet.jpg`](carousel-v2/contact-sheet.jpg): overview of the revised ten-panel academic carousel.
 - [Editable Figma source](https://www.figma.com/design/Zz8DXi2BvnEV0f4rWOaI1F).
 
 See `docs/ATTRIBUTION.md`, `docs/MATHEMATICAL_SCOPE.md` and
