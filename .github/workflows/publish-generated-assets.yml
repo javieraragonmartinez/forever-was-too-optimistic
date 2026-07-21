@@ -1,14 +1,14 @@
-name: Publish generated assets
-run-name: Publish generated assets · ${{ github.ref_name }} · ${{ github.sha }}
+name: Publish complete generated release
+run-name: Publish complete release · ${{ github.ref_name }} · ${{ github.sha }}
 
 on:
   push:
     branches: [main]
     paths:
+      - 'scripts/generate_publication_media.py'
+      - 'scripts/bcw_yagzhev_certificate.py'
       - 'ahora-sabemos-v1.0.tex'
-      - 'scripts/**'
-      - 'requirements.txt'
-      - '.github/workflows/build-and-verify.yml'
+      - '.github/release-trigger'
       - '.github/workflows/publish-generated-assets.yml'
   workflow_dispatch:
 
@@ -16,7 +16,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: publish-generated-assets-${{ github.ref }}
+  group: publish-complete-release-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -38,7 +38,7 @@ jobs:
       - name: Install Python dependencies
         run: python -m pip install --upgrade pip && python -m pip install -r requirements.txt
 
-      - name: Install TeX and PDF inspection tools
+      - name: Install TeX and inspection tools
         run: |
           sudo apt-get update
           sudo apt-get install -y texlive-latex-extra texlive-fonts-recommended poppler-utils fonts-dejavu-core
@@ -46,10 +46,8 @@ jobs:
       - name: Generate exact certificate
         run: python scripts/bcw_yagzhev_certificate.py --write-artifact artifacts/bcw-yagzhev-dim79.json
 
-      - name: Generate social and academic visuals
-        run: |
-          python scripts/generate_carousel.py
-          python scripts/generate_visual_assets.py
+      - name: Generate complete publication media
+        run: python scripts/generate_publication_media.py
 
       - name: Compile paper in three passes
         run: |
@@ -58,13 +56,19 @@ jobs:
           pdflatex -interaction=nonstopmode -halt-on-error ahora-sabemos-v1.0.tex
           test "$(pdfinfo ahora-sabemos-v1.0.pdf | awk '/^Pages:/ {print $2}')" = "43"
 
-      - name: Remove generated temporary files
+      - name: Verify generated scientific artifacts
+        run: |
+          python scripts/verify_bcw_yagzhev_artifact.py artifacts/bcw-yagzhev-dim79.json
+          python -m jsonschema -i artifacts/bcw-yagzhev-dim79.json artifacts/bcw-yagzhev-certificate.schema.json
+          python -m unittest discover -s tests -p 'test_*.py' -v
+
+      - name: Remove temporary files
         run: |
           find . -type d -name '__pycache__' -prune -exec rm -rf {} +
           find . -type f \( -name '*.pyc' -o -name '*.pyo' \) -delete
           rm -f *.aux *.log *.out *.toc *.fls *.fdb_latexmk *.synctex.gz
 
-      - name: Build repository integrity manifest
+      - name: Build complete integrity manifest
         run: |
           rm -f artifacts/SHA256SUMS
           find . -type f \
@@ -76,15 +80,16 @@ jobs:
             -not -name '*.toc' -not -name '*.fls' -not -name '*.fdb_latexmk' \
             -not -name '*.synctex.gz' \
             -print0 | sort -z | xargs -0 sha256sum | sed 's#  \./#  #' > artifacts/SHA256SUMS
+          sha256sum -c artifacts/SHA256SUMS
 
-      - name: Commit generated release assets
+      - name: Commit complete generated release
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add artifacts/bcw-yagzhev-dim79.json artifacts/SHA256SUMS ahora-sabemos-v1.0.pdf assets carousel carousel-v2
+          git add artifacts/bcw-yagzhev-dim79.json artifacts/SHA256SUMS ahora-sabemos-v1.0.pdf assets carousel-v2 social
           if git diff --cached --quiet; then
-            echo 'Generated assets already current.'
+            echo 'Generated release already current.'
           else
-            git commit -m 'build: publish reproducible paper, certificate and visual assets'
+            git commit -m 'build: publish complete reproducible release and media'
             git push origin HEAD:main
           fi
