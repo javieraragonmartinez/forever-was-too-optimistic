@@ -65,15 +65,21 @@ jobs:
         run: |
           find . -type d -name '__pycache__' -prune -exec rm -rf {} +
           find . -type f \( -name '*.pyc' -o -name '*.pyo' \) -delete
-          rm -f *.aux *.log *.out *.toc *.fls *.fdb_latexmk *.synctex.gz artifacts/SHA256SUMS
+          rm -f \
+            *.aux *.bbl *.bcf *.blg *.brf *.idx *.ilg *.ind *.lof *.lot \
+            *.log *.out *.run.xml *.toc *.fls *.fdb_latexmk *.synctex.gz \
+            artifacts/SHA256SUMS
           find . -type f \
             -not -path './.git/*' \
             -not -path './artifacts/SHA256SUMS' \
             -not -path '*/__pycache__/*' \
             -not -name '*.pyc' -not -name '*.pyo' \
-            -not -name '*.aux' -not -name '*.log' -not -name '*.out' \
-            -not -name '*.toc' -not -name '*.fls' -not -name '*.fdb_latexmk' \
-            -not -name '*.synctex.gz' \
+            -not -name '*.aux' -not -name '*.bbl' -not -name '*.bcf' \
+            -not -name '*.blg' -not -name '*.brf' -not -name '*.idx' \
+            -not -name '*.ilg' -not -name '*.ind' -not -name '*.lof' \
+            -not -name '*.lot' -not -name '*.log' -not -name '*.out' \
+            -not -name '*.run.xml' -not -name '*.toc' -not -name '*.fls' \
+            -not -name '*.fdb_latexmk' -not -name '*.synctex.gz' \
             -print0 | sort -z | xargs -0 sha256sum | sed 's#  \./#  #' > artifacts/SHA256SUMS
           sha256sum -c artifacts/SHA256SUMS
 
