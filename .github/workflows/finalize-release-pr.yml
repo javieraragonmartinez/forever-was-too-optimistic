@@ -1,0 +1,84 @@
+name: Finalize complete release PR
+run-name: Finalize release · PR #${{ github.event.pull_request.number }} · ${{ github.event.pull_request.head.sha }}
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - '.github/finalize-release'
+      - 'scripts/generate_publication_media.py'
+      - '.github/workflows/finalize-release-pr.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  finalize:
+    if: github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out pull request branch
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+          cache: pip
+
+      - name: Install Python dependencies
+        run: python -m pip install --upgrade pip && python -m pip install -r requirements.txt
+
+      - name: Install TeX and inspection tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-latex-extra texlive-fonts-recommended poppler-utils fonts-dejavu-core
+
+      - name: Generate certificate and all publication media
+        run: |
+          python scripts/bcw_yagzhev_certificate.py --write-artifact artifacts/bcw-yagzhev-dim79.json
+          python scripts/generate_publication_media.py
+
+      - name: Compile 43-page preprint
+        run: |
+          pdflatex -interaction=nonstopmode -halt-on-error ahora-sabemos-v1.0.tex
+          pdflatex -interaction=nonstopmode -halt-on-error ahora-sabemos-v1.0.tex
+          pdflatex -interaction=nonstopmode -halt-on-error ahora-sabemos-v1.0.tex
+          test "$(pdfinfo ahora-sabemos-v1.0.pdf | awk '/^Pages:/ {print $2}')" = "43"
+
+      - name: Verify exact artifacts and tests
+        run: |
+          python scripts/verify_bcw_yagzhev_artifact.py artifacts/bcw-yagzhev-dim79.json
+          python -m jsonschema -i artifacts/bcw-yagzhev-dim79.json artifacts/bcw-yagzhev-certificate.schema.json
+          python -m unittest discover -s tests -p 'test_*.py' -v
+
+      - name: Build and check complete SHA-256 manifest
+        run: |
+          find . -type d -name '__pycache__' -prune -exec rm -rf {} +
+          find . -type f \( -name '*.pyc' -o -name '*.pyo' \) -delete
+          rm -f *.aux *.log *.out *.toc *.fls *.fdb_latexmk *.synctex.gz artifacts/SHA256SUMS
+          find . -type f \
+            -not -path './.git/*' \
+            -not -path './artifacts/SHA256SUMS' \
+            -not -path '*/__pycache__/*' \
+            -not -name '*.pyc' -not -name '*.pyo' \
+            -not -name '*.aux' -not -name '*.log' -not -name '*.out' \
+            -not -name '*.toc' -not -name '*.fls' -not -name '*.fdb_latexmk' \
+            -not -name '*.synctex.gz' \
+            -print0 | sort -z | xargs -0 sha256sum | sed 's#  \./#  #' > artifacts/SHA256SUMS
+          sha256sum -c artifacts/SHA256SUMS
+
+      - name: Commit generated release to pull request branch
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add artifacts/bcw-yagzhev-dim79.json artifacts/SHA256SUMS ahora-sabemos-v1.0.pdf assets carousel-v2 social
+          if git diff --cached --quiet; then
+            echo 'Generated release already current.'
+          else
+            git commit -m 'build: publish complete reproducible release and media'
+            git push origin HEAD:${{ github.event.pull_request.head.ref }}
+          fi
