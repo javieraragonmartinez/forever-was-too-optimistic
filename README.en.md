@@ -7,6 +7,7 @@
 [![Build and verify](https://github.com/javieraragonmartinez/forever-was-too-optimistic/actions/workflows/build-and-verify.yml/badge.svg)](https://github.com/javieraragonmartinez/forever-was-too-optimistic/actions/workflows/build-and-verify.yml)
 ![Preprint](https://img.shields.io/badge/status-preprint-B88430)
 ![Peer review](https://img.shields.io/badge/peer_review-pending-24598F)
+![License](https://img.shields.io/badge/license-CC_BY_4.0_%2B_MIT-1A6B6B)
 
 Version 1.0 of an extremely recent preprint dated 20 July 2026. It has not
 been peer reviewed. The elementary algebraic core is distributed together
@@ -19,12 +20,12 @@ The polynomial map is
 
 \[
 F(x,y,z)=\left(
-egin{aligned}
- &(1+xy)^3z+y^2(1+xy)(4+3xy),\
- &y+3x(1+xy)^2z+3xy^2(4+3xy),\
+\begin{aligned}
+ &(1+xy)^3z+y^2(1+xy)(4+3xy),\\
+ &y+3x(1+xy)^2z+3xy^2(4+3xy),\\
  &2x-3x^2y-x^3z
 \end{aligned}
-ight).
+\right).
 \]
 
 Exact differentiation gives
@@ -65,7 +66,7 @@ python -m pip install -r requirements.txt
 python scripts/bcw_yagzhev_certificate.py --write-artifact artifacts/bcw-yagzhev-dim79.json
 python scripts/verify_bcw_yagzhev_artifact.py artifacts/bcw-yagzhev-dim79.json
 python -m jsonschema -i artifacts/bcw-yagzhev-dim79.json artifacts/bcw-yagzhev-certificate.schema.json
-python -m unittest discover -v
+python -m unittest discover -s tests -p 'test_*.py' -v
 ```
 
 Compile the paper with three `pdflatex` passes. The repository automation also
