@@ -1,4 +1,4 @@
-<p align="center"><img src="assets/repository-cover.svg" alt="Portada académica: tres puntos racionales distintos tienen una imagen común" width="100%"></p>
+<p align="center"><img src="assets/repository-cover.png" alt="Portada académica: tres puntos racionales distintos tienen una imagen común" width="100%"></p>
 
 # Ahora sabemos que “siempre” era demasiado optimista
 
@@ -8,6 +8,10 @@
 ![Preprint](https://img.shields.io/badge/status-preprint-B88430)
 ![Peer review](https://img.shields.io/badge/peer_review-pending-24598F)
 ![License](https://img.shields.io/badge/license-CC_BY_4.0_%2B_MIT-1A6B6B)
+
+[**Descargar el preprint de 43 páginas**](ahora-sabemos-v1.0.pdf) ·
+[Certificado exacto](artifacts/bcw-yagzhev-dim79.json) ·
+[Manifiesto SHA-256](artifacts/SHA256SUMS)
 
 **English title:** *Now We Know That “Always” Was Too Optimistic*
 
@@ -76,10 +80,12 @@ el manifiesto SHA-256.
 
 ## Materiales visuales y de comunicación
 
-- [`assets/repository-cover.svg`](assets/repository-cover.svg): portada académica visible en el README.
-- [`assets/social-preview.svg`](assets/social-preview.svg): vista previa horizontal.
-- [`social/`](social/): piezas editoriales listas para adaptar y publicar.
-- `carousel-v2/`: carrusel académico revisado de diez láminas.
+- [`assets/repository-cover.png`](assets/repository-cover.png): portada académica visible en el README.
+- [`assets/social-preview.png`](assets/social-preview.png): vista previa horizontal para GitHub y redes.
+- [`assets/academic-cover.png`](assets/academic-cover.png): cubierta editorial vertical.
+- [`assets/visual-abstract.svg`](assets/visual-abstract.svg): resumen visual vectorial.
+- [`social/`](social/): cuatro piezas editoriales PNG y SVG.
+- [`carousel-v2/contact-sheet.jpg`](carousel-v2/contact-sheet.jpg): vista general del carrusel académico de diez láminas.
 - [Fuente editable en Figma](https://www.figma.com/design/Zz8DXi2BvnEV0f4rWOaI1F).
 
 Consulta `docs/ATTRIBUTION.md`, `docs/MATHEMATICAL_SCOPE.md` y
