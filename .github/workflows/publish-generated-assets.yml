@@ -1,14 +1,14 @@
-name: Publish complete generated release
-run-name: Publish complete release · ${{ github.ref_name }} · ${{ github.sha }}
+name: Publish generated assets
+run-name: Publish generated assets · ${{ github.ref_name }} · ${{ github.sha }}
 
 on:
   push:
     branches: [main]
     paths:
-      - 'scripts/generate_publication_media.py'
-      - 'scripts/bcw_yagzhev_certificate.py'
       - 'ahora-sabemos-v1.0.tex'
-      - '.github/release-trigger'
+      - 'scripts/bcw_yagzhev_certificate.py'
+      - 'scripts/generate_publication_media.py'
+      - 'requirements.txt'
       - '.github/workflows/publish-generated-assets.yml'
   workflow_dispatch:
 
@@ -16,7 +16,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: publish-complete-release-${{ github.ref }}
+  group: publish-generated-assets-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -41,48 +41,58 @@ jobs:
       - name: Install TeX and inspection tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y texlive-latex-extra texlive-fonts-recommended poppler-utils fonts-dejavu-core
+          sudo apt-get install -y texlive-latex-extra texlive-fonts-recommended texlive-fonts-extra poppler-utils fonts-dejavu-core
 
-      - name: Generate exact certificate
-        run: python scripts/bcw_yagzhev_certificate.py --write-artifact artifacts/bcw-yagzhev-dim79.json
-
-      - name: Generate complete publication media
-        run: python scripts/generate_publication_media.py
-
-      - name: Compile paper in three passes
+      - name: Generate exact certificate and publication media
         run: |
-          pdflatex -interaction=nonstopmode -halt-on-error ahora-sabemos-v1.0.tex
-          pdflatex -interaction=nonstopmode -halt-on-error ahora-sabemos-v1.0.tex
-          pdflatex -interaction=nonstopmode -halt-on-error ahora-sabemos-v1.0.tex
+          python scripts/bcw_yagzhev_certificate.py --write-artifact artifacts/bcw-yagzhev-dim79.json
+          python scripts/generate_publication_media.py
+
+      - name: Compile 43-page preprint
+        shell: bash
+        run: |
+          set -euo pipefail
+          for pass in 1 2 3; do
+            if ! pdflatex -interaction=nonstopmode -halt-on-error ahora-sabemos-v1.0.tex > "/tmp/pdflatex-${pass}.log" 2>&1; then
+              tail -n 120 "/tmp/pdflatex-${pass}.log"
+              exit 1
+            fi
+          done
+          pdfinfo ahora-sabemos-v1.0.pdf | grep '^Pages:'
           test "$(pdfinfo ahora-sabemos-v1.0.pdf | awk '/^Pages:/ {print $2}')" = "43"
 
-      - name: Verify generated scientific artifacts
+      - name: Verify exact artifacts and tests
         run: |
           python scripts/verify_bcw_yagzhev_artifact.py artifacts/bcw-yagzhev-dim79.json
           python -m jsonschema -i artifacts/bcw-yagzhev-dim79.json artifacts/bcw-yagzhev-certificate.schema.json
           python -m unittest discover -s tests -p 'test_*.py' -v
 
-      - name: Remove temporary files
+      - name: Remove transient build files
         run: |
           find . -type d -name '__pycache__' -prune -exec rm -rf {} +
           find . -type f \( -name '*.pyc' -o -name '*.pyo' \) -delete
-          rm -f *.aux *.log *.out *.toc *.fls *.fdb_latexmk *.synctex.gz
+          rm -f \
+            *.aux *.bbl *.bcf *.blg *.brf *.idx *.ilg *.ind *.lof *.lot \
+            *.log *.out *.run.xml *.toc *.fls *.fdb_latexmk *.synctex.gz \
+            artifacts/SHA256SUMS
 
-      - name: Build complete integrity manifest
+      - name: Build and verify complete SHA-256 manifest
         run: |
-          rm -f artifacts/SHA256SUMS
           find . -type f \
             -not -path './.git/*' \
             -not -path './artifacts/SHA256SUMS' \
             -not -path '*/__pycache__/*' \
             -not -name '*.pyc' -not -name '*.pyo' \
-            -not -name '*.aux' -not -name '*.log' -not -name '*.out' \
-            -not -name '*.toc' -not -name '*.fls' -not -name '*.fdb_latexmk' \
-            -not -name '*.synctex.gz' \
+            -not -name '*.aux' -not -name '*.bbl' -not -name '*.bcf' \
+            -not -name '*.blg' -not -name '*.brf' -not -name '*.idx' \
+            -not -name '*.ilg' -not -name '*.ind' -not -name '*.lof' \
+            -not -name '*.lot' -not -name '*.log' -not -name '*.out' \
+            -not -name '*.run.xml' -not -name '*.toc' -not -name '*.fls' \
+            -not -name '*.fdb_latexmk' -not -name '*.synctex.gz' \
             -print0 | sort -z | xargs -0 sha256sum | sed 's#  \./#  #' > artifacts/SHA256SUMS
           sha256sum -c artifacts/SHA256SUMS
 
-      - name: Commit complete generated release
+      - name: Commit generated release assets
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
@@ -90,6 +100,6 @@ jobs:
           if git diff --cached --quiet; then
             echo 'Generated release already current.'
           else
-            git commit -m 'build: publish complete reproducible release and media'
+            git commit -m 'build: refresh reproducible release assets'
             git push origin HEAD:main
           fi
