@@ -1,17 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 500" role="img" aria-labelledby="t d">
-<title id="t">Three distinct rational points map to one image</title>
-<desc id="d">Visual abstract for the explicit Jacobian counterexample.</desc>
-<rect width="1200" height="500" fill="#F6F2E8"/>
-<g fill="none" stroke-width="6">
-<path d="M150 100 C350 130 460 320 600 400" stroke="#24598F"/>
-<path d="M600 70 C600 180 600 290 600 400" stroke="#09101C"/>
-<path d="M1050 100 C850 130 740 320 600 400" stroke="#B88430"/>
-</g>
-<g font-family="Georgia,serif" font-size="34" text-anchor="middle">
-<circle cx="150" cy="100" r="32" fill="#F6F2E8" stroke="#24598F" stroke-width="6"/><text x="150" y="112" fill="#09101C">p₁</text>
-<circle cx="600" cy="70" r="32" fill="#F6F2E8" stroke="#09101C" stroke-width="6"/><text x="600" y="82" fill="#09101C">p₂</text>
-<circle cx="1050" cy="100" r="32" fill="#F6F2E8" stroke="#B88430" stroke-width="6"/><text x="1050" y="112" fill="#09101C">p₃</text>
-<circle cx="600" cy="400" r="46" fill="#B88430"/><text x="600" y="412" fill="#09101C">F(p)</text>
-</g>
-<text x="600" y="475" fill="#09101C" font-family="Arial,sans-serif" font-size="26" text-anchor="middle">det JF = −2 · three distinct rational points · one image</text>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 500"><rect width="1200" height="500" fill="#f5f0e6"/><path d="M150 100C350 130 460 320 600 400M600 70V400M1050 100C850 130 740 320 600 400" fill="none" stroke="#c9912b" stroke-width="6"/><circle cx="600" cy="400" r="46" fill="#c9912b"/><text x="600" y="412" text-anchor="middle" font-family="Arial" font-size="28" fill="#08111f">F(p)</text></svg>
