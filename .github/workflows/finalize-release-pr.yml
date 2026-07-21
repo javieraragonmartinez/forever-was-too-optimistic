@@ -35,7 +35,7 @@ jobs:
       - name: Install TeX and inspection tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y texlive-latex-extra texlive-fonts-recommended poppler-utils fonts-dejavu-core
+          sudo apt-get install -y texlive-latex-extra texlive-fonts-recommended texlive-fonts-extra poppler-utils fonts-dejavu-core
 
       - name: Generate certificate and all publication media
         run: |
@@ -43,10 +43,16 @@ jobs:
           python scripts/generate_publication_media.py
 
       - name: Compile 43-page preprint
+        shell: bash
         run: |
-          pdflatex -interaction=nonstopmode -halt-on-error ahora-sabemos-v1.0.tex
-          pdflatex -interaction=nonstopmode -halt-on-error ahora-sabemos-v1.0.tex
-          pdflatex -interaction=nonstopmode -halt-on-error ahora-sabemos-v1.0.tex
+          set -euo pipefail
+          for pass in 1 2 3; do
+            if ! pdflatex -interaction=nonstopmode -halt-on-error ahora-sabemos-v1.0.tex > "/tmp/pdflatex-${pass}.log" 2>&1; then
+              tail -n 120 "/tmp/pdflatex-${pass}.log"
+              exit 1
+            fi
+          done
+          pdfinfo ahora-sabemos-v1.0.pdf | grep '^Pages:'
           test "$(pdfinfo ahora-sabemos-v1.0.pdf | awk '/^Pages:/ {print $2}')" = "43"
 
       - name: Verify exact artifacts and tests
