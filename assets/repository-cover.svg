@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Now We Know That Always Was Too Optimistic</title>
+  <desc id="desc">Academic repository cover showing three distinct rational points mapping to a common image.</desc>
+  <rect width="1600" height="900" fill="#08111f"/>
+  <g fill="none" stroke="#223147" stroke-width="1" opacity="0.35">
+    <path d="M0 120H1600M0 240H1600M0 360H1600M0 480H1600M0 600H1600M0 720H1600"/>
+    <path d="M200 0V900M400 0V900M600 0V900M800 0V900M1000 0V900M1200 0V900M1400 0V900"/>
+  </g>
+  <text x="88" y="106" fill="#c9912b" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700" letter-spacing="1.5">JACOBIAN CONJECTURE · EXPLICIT COUNTEREXAMPLE · PREPRINT</text>
+  <text x="88" y="246" fill="#f5f0e6" font-family="Georgia, 'Times New Roman', serif" font-size="74" font-weight="700">Now We Know That</text>
+  <text x="88" y="326" fill="#f5f0e6" font-family="Georgia, 'Times New Roman', serif" font-size="74" font-weight="700">“Always” Was Too Optimistic</text>
+  <text x="90" y="392" fill="#d8dbe0" font-family="Arial, Helvetica, sans-serif" font-size="28">Algebraic and geometric anatomy of an explicit polynomial map in dimension three.</text>
+  <g stroke-linecap="round" stroke-width="5" fill="none">
+    <path d="M260 505 C430 545 585 625 800 700" stroke="#2f69a2"/>
+    <path d="M800 485 C800 560 800 625 800 700" stroke="#f5f0e6"/>
+    <path d="M1340 505 C1170 545 1015 625 800 700" stroke="#c9912b"/>
+  </g>
+  <g font-family="Georgia, 'Times New Roman', serif" font-size="28" text-anchor="middle">
+    <circle cx="260" cy="505" r="26" fill="#08111f" stroke="#2f69a2" stroke-width="4"/><text x="260" y="515" fill="#f5f0e6">p₁</text>
+    <circle cx="800" cy="485" r="26" fill="#08111f" stroke="#f5f0e6" stroke-width="4"/><text x="800" y="495" fill="#f5f0e6">p₂</text>
+    <circle cx="1340" cy="505" r="26" fill="#08111f" stroke="#c9912b" stroke-width="4"/><text x="1340" y="515" fill="#f5f0e6">p₃</text>
+    <circle cx="800" cy="700" r="38" fill="#c9912b"/><text x="800" y="710" fill="#08111f" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700">F(p)</text>
+  </g>
+  <g font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700" fill="#f5f0e6">
+    <rect x="88" y="748" width="170" height="42" rx="21" fill="none" stroke="#c9912b" stroke-width="2"/><text x="173" y="776" text-anchor="middle">det JF = −2</text>
+    <rect x="274" y="748" width="322" height="42" rx="21" fill="none" stroke="#c9912b" stroke-width="2"/><text x="435" y="776" text-anchor="middle">3 rational points · 1 image</text>
+    <rect x="612" y="748" width="216" height="42" rx="21" fill="none" stroke="#c9912b" stroke-width="2"/><text x="720" y="776" text-anchor="middle">exact certificate</text>
+  </g>
+  <line x1="88" y1="835" x2="1512" y2="835" stroke="#5b6470"/>
+  <text x="88" y="868" fill="#f5f0e6" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="700">Javier Aragón · v1.0 · 20 July 2026</text>
+  <text x="1512" y="868" text-anchor="end" fill="#c9912b" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="700">PREPRINT · NOT PEER REVIEWED</text>
+</svg>
