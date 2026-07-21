@@ -1,4 +1,4 @@
-<p align="center"><img src="assets/repository-cover.png" alt="Academic cover: three rational points map to one image" width="100%"></p>
+<p align="center"><img src="assets/repository-cover.svg" alt="Academic cover: three distinct rational points have one common image" width="100%"></p>
 
 # Now We Know That “Always” Was Too Optimistic
 
@@ -74,7 +74,9 @@ regenerates the PDF, certificate, social graphics and SHA-256 manifest.
 
 ## Visual and communication materials
 
-- `assets/`: academic repository cover, social preview and visual abstract.
+- [`assets/repository-cover.svg`](assets/repository-cover.svg): academic README cover.
+- [`assets/social-preview.svg`](assets/social-preview.svg): horizontal social preview.
+- [`social/`](social/): editorial publication cards.
 - `carousel-v2/`: revised ten-panel academic carousel.
 - [Editable Figma source](https://www.figma.com/design/Zz8DXi2BvnEV0f4rWOaI1F).
 
