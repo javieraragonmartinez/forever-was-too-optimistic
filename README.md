@@ -1,4 +1,4 @@
-<p align="center"><img src="assets/repository-cover.png" alt="Academic cover: three rational points map to one image" width="100%"></p>
+<p align="center"><img src="assets/repository-cover.svg" alt="Portada académica: tres puntos racionales distintos tienen una imagen común" width="100%"></p>
 
 # Ahora sabemos que “siempre” era demasiado optimista
 
@@ -9,7 +9,6 @@
 ![Peer review](https://img.shields.io/badge/peer_review-pending-24598F)
 ![License](https://img.shields.io/badge/license-CC_BY_4.0_%2B_MIT-1A6B6B)
 
-
 **English title:** *Now We Know That “Always” Was Too Optimistic*
 
 Versión 1.0 de un preprint extremadamente reciente, fechado el 20 de julio de
@@ -19,7 +18,7 @@ solo la biblioteca estándar de Python.
 
 ## El certificado elemental
 
-El mapa polinómico estudiado es
+El mapa polinómico es
 
 \[
 F(x,y,z)=\left(
@@ -40,131 +39,48 @@ La diferenciación exacta da
 Sin embargo, los tres puntos racionales distintos
 
 \[
-\left(0,0,-\frac14\right),\qquad
-\left(1,-\frac32,\frac{13}{2}\right),\qquad
-\left(-1,\frac32,\frac{13}{2}\right)
+(0,0,-1/4),\qquad (1,-3/2,13/2),\qquad (-1,3/2,13/2)
 \]
 
 tienen la imagen común
 
 \[
-F(p)=\left(-\frac14,0,0\right).
+(-1/4,0,0).
 \]
 
-Por tanto, `F` tiene determinante jacobiano constante y no nulo, pero no es
-inyectivo; esto contradice la afirmación universal de la conjetura jacobiana
-en dimensión tres. El manuscrito estudia además las fibras, la no propiedad,
-la normalización de la superficie asintótica y una reducción constructiva de
-Bass–Connell–Wright/Yagzhev a dimensión 79.
+Por tanto, el mapa tiene determinante jacobiano constante y no nulo, pero no
+es inyectivo. El manuscrito estudia sus fibras y su geometría global y ofrece
+una reducción constructiva Bass–Connell–Wright/Yagzhev hasta dimensión 79.
 
 ## Estado científico
 
 - Preprint independiente; no revisado por pares.
-- Resultado anunciado el 20 de julio de 2026 y todavía sujeto a verificación,
-  revisión de prioridad y evaluación matemática externa.
-- Las identidades polinómicas y las colisiones se comprueban con aritmética
-  racional exacta por dos implementaciones separadas.
-- No se afirma respaldo institucional por la existencia de una pull request,
-  una publicación informal o un repositorio de terceros.
-- El DOI `10.5281/zenodo.21460623` está **reservado y pendiente de
-  publicación**. No debe citarse como depósito público resoluble hasta que el
-  borrador de Zenodo sea publicado y auditado.
+- Las identidades exactas y las colisiones pueden comprobarse mediante implementaciones separadas.
+- La prioridad, la atribución y las implicaciones más amplias quedan abiertas a revisión externa.
+- El DOI `10.5281/zenodo.21460623` está reservado y pendiente de publicación.
+- No se infiere respaldo institucional de conversaciones, repositorios o pull requests de terceros.
 
-## Estructura
-
-```text
-ahora-sabemos-v1.0.tex              fuente canónica congelada
-ahora-sabemos-v1.0.pdf              PDF compilado desde esa fuente
-certificates/elementary-counterexample.tex
-scripts/bcw_yagzhev_certificate.py  generador exacto (SymPy)
-scripts/verify_bcw_yagzhev_artifact.py
-scripts/generate_carousel.py        regenerador gráfico determinista
-artifacts/bcw-yagzhev-dim79.json     certificado v2
-artifacts/bcw-yagzhev-certificate.schema.json
-artifacts/SHA256SUMS                 manifiesto de integridad
-docs/REPRODUCIBILITY.md
-docs/ARCHIVING.md
-docs/ATTRIBUTION.md
-docs/MATHEMATICAL_SCOPE.md
-tests/                               pruebas automáticas
-carousel/                            ocho láminas 1080×1350 y guía de uso
-```
-
-## Generación y verificación
-
-Generar de nuevo el certificado:
+## Reproducir y verificar
 
 ```bash
-python scripts/bcw_yagzhev_certificate.py \
-  --write-artifact artifacts/bcw-yagzhev-dim79.json
+python -m pip install -r requirements.txt
+python scripts/bcw_yagzhev_certificate.py --write-artifact artifacts/bcw-yagzhev-dim79.json
+python scripts/verify_bcw_yagzhev_artifact.py artifacts/bcw-yagzhev-dim79.json
+python -m jsonschema -i artifacts/bcw-yagzhev-dim79.json artifacts/bcw-yagzhev-certificate.schema.json
+python -m unittest discover -s tests -p 'test_*.py' -v
 ```
 
-Verificarlo sin SymPy y sin importar el generador:
+El artículo se compila con tres pasadas de `pdflatex`. La automatización del
+repositorio también regenera el PDF, el certificado, los gráficos sociales y
+el manifiesto SHA-256.
 
-```bash
-python scripts/verify_bcw_yagzhev_artifact.py \
-  artifacts/bcw-yagzhev-dim79.json
-```
+## Materiales visuales y de comunicación
 
-Validar la estructura v2 cuando `jsonschema` esté disponible:
+- [`assets/repository-cover.svg`](assets/repository-cover.svg): portada académica visible en el README.
+- [`assets/social-preview.svg`](assets/social-preview.svg): vista previa horizontal.
+- [`social/`](social/): piezas editoriales listas para adaptar y publicar.
+- `carousel-v2/`: carrusel académico revisado de diez láminas.
+- [Fuente editable en Figma](https://www.figma.com/design/Zz8DXi2BvnEV0f4rWOaI1F).
 
-```bash
-python -m jsonschema \
-  -i artifacts/bcw-yagzhev-dim79.json \
-  artifacts/bcw-yagzhev-certificate.schema.json
-```
-
-Comprobar la integridad de la release:
-
-```bash
-sha256sum -c artifacts/SHA256SUMS
-```
-
-Ejecutar las pruebas:
-
-```bash
-python -m unittest discover -v
-```
-
-## Compilación
-
-```bash
-pdflatex -interaction=nonstopmode -halt-on-error ahora-sabemos-v1.0.tex
-pdflatex -interaction=nonstopmode -halt-on-error ahora-sabemos-v1.0.tex
-pdflatex -interaction=nonstopmode -halt-on-error ahora-sabemos-v1.0.tex
-```
-
-Los tres pases resuelven el índice, las referencias cruzadas y los enlaces de
-retorno bibliográficos.
-
-## Alcance del suplemento computacional
-
-El certificado comprueba el mapa fuente, los determinantes tridimensionales,
-las colisiones, las 18 identidades de reducción, la reconstrucción en
-dimensión 39, los conteos `39/47/38`, la forma cúbica homogénea final y las
-colisiones en dimensión 79. No sustituye la revisión por pares ni demuestra
-de nuevo todos los teoremas generales citados por el artículo. Véase
-[`docs/MATHEMATICAL_SCOPE.md`](docs/MATHEMATICAL_SCOPE.md).
-
-## Atribución, cita y licencias
-
-La cronología y la separación entre resultados importados, reproducidos y
-desarrollados en el manuscrito se documentan en
-[`docs/ATTRIBUTION.md`](docs/ATTRIBUTION.md). Los metadatos de cita están en
-[`CITATION.cff`](CITATION.cff).
-
-El artículo y la documentación narrativa se distribuyen bajo CC BY 4.0; el
-código, el esquema y los artefactos de verificación, bajo MIT. La delimitación
-exacta figura en [`LICENSE.md`](LICENSE.md).
-
-## Sistema visual y materiales de comunicación
-
-- [Portada académica](assets/repository-cover.png)
-- [Vista previa social de GitHub](assets/social-preview.png)
-- [Visual abstract en SVG](assets/visual-abstract.svg)
-- [Carrusel revisado de diez láminas](carousel-v2/)
-- [Sistema editable en Figma](https://www.figma.com/design/Zz8DXi2BvnEV0f4rWOaI1F)
-
-La identidad visual utiliza únicamente relaciones demostrables del ejemplo:
-tres puntos racionales distintos, una imagen común y el determinante jacobiano
-constante. Los elementos decorativos no se presentan como geometría probatoria.
+Consulta `docs/ATTRIBUTION.md`, `docs/MATHEMATICAL_SCOPE.md` y
+`docs/REPRODUCIBILITY.md` antes de citar o extender el resultado.
